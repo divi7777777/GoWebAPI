@@ -1,6 +1,7 @@
 trigger:
 - master
-
+variables:
+  tag: '$(Build.BuildId)'
 pool:
   vmImage: 'ubuntu-latest'
 steps:
