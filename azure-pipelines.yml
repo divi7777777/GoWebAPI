@@ -3,8 +3,32 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
-
 steps:
+- task: GoTool@0
+  inputs:
+    version: '1.15'
+- task: Go@0
+  inputs:
+    command: 'build'
+    workingDirectory: '$(Build.ArtifactStagingDirectory)/main'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'JFROG_BUILD'
+    repository: 'go/image'
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
+    tags: '$(tag)'
+    addPipelineData: false
+    addBaseImageData: false
+- task: ArtifactoryDocker@1
+  inputs:
+    command: 'push'
+    artifactoryService: 'JFROG'
+    targetRepo: 'go'
+    imageName: 'demo77.jfrog.io/go/image:$(tag)'
+    collectBuildInfo: true
+    buildName: '$(Build.DefinitionName)'
+    buildNumber: '$(Build.BuildNumber)'
 - task: CopyFiles@2
   inputs:
     Contents: '**'
@@ -15,11 +39,3 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     
-- task: GoTool@0
-  inputs:
-    version: '1.15'
-
-- task: Go@0
-  inputs:
-    command: 'build'
-    workingDirectory: '$(Build.ArtifactStagingDirectory)/main'
