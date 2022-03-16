@@ -16,7 +16,9 @@ type whoami struct {
 func main() {
 	request1()
 }
-
+func Increment(x int) (result int) {
+	return x + 1
+}
 func whoAmI(response http.ResponseWriter, r *http.Request) {
 	who := []whoami{
 		whoami{Name: "Michael Levan",
